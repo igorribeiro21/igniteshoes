@@ -6,6 +6,20 @@ import { useEffect, useState } from 'react';
 import { NotificationWillDisplayEvent, OSNotification, OneSignal } from 'react-native-onesignal';
 import { Notification } from '../components/Notification';
 
+const linking = {
+  prefixes: ['com.igniteshoes://','igniteshoesapp://','exp+igniteshoesapp://'],
+  config: {
+    screens: {
+      details: {
+        path: 'details/:productId',
+        parse: {
+          productId: (productId: string) => productId
+        }
+      }
+    }
+  }
+}
+
 export function Routes() {
   const [notification, setNotification] = useState<OSNotification | undefined>();
   const { colors } = useTheme();
@@ -22,7 +36,7 @@ export function Routes() {
   }, []);
 
   return (
-    <NavigationContainer theme={theme}>
+    <NavigationContainer theme={theme} linking={linking}>
       <AppRoutes />
 
       {
