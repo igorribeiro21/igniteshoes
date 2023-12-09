@@ -5,6 +5,7 @@ import { AppRoutes } from './app.routes';
 import { useEffect, useState } from 'react';
 import { NotificationWillDisplayEvent, OSNotification, OneSignal } from 'react-native-onesignal';
 import { Notification } from '../components/Notification';
+import { OSNotificationNew } from '../components/Notification';
 
 const linking = {
   prefixes: ['com.igniteshoes://','igniteshoesapp://','exp+igniteshoesapp://'],
@@ -21,7 +22,7 @@ const linking = {
 }
 
 export function Routes() {
-  const [notification, setNotification] = useState<OSNotification | undefined>();
+  const [notification, setNotification] = useState<OSNotificationNew | undefined>();
   const { colors } = useTheme();
 
   const theme = DefaultTheme;
@@ -29,10 +30,18 @@ export function Routes() {
 
   useEffect(() => {
     OneSignal.Notifications.addEventListener('foregroundWillDisplay', (notificationReceivedEvent: NotificationWillDisplayEvent) => {
-      const response = notificationReceivedEvent.getNotification();
-
+      console.log('foregroundWillDisplay')
+      console.log('notificationReceivedEvent.notification',notificationReceivedEvent.notification)
+      const response = notificationReceivedEvent.getNotification() as OSNotificationNew;
+      
       setNotification(response);
     });
+
+    OneSignal.Notifications.addEventListener('click',(e) => {
+      const notification = e.notification as unknown as OSNotificationNew;
+      console.log('Clique evento',notification);
+      console.log('Clique evento launcheUrl',notification.launchUrl);
+    })
   }, []);
 
   return (
